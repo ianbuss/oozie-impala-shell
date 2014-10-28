@@ -1,0 +1,27 @@
+<workflow-app name="run-impala-query" xmlns="uri:oozie:workflow:0.4">
+    <start to="run-query"/>
+    <action name="run-query">
+        <shell xmlns="uri:oozie:shell-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name></name>
+                    <value></value>
+                </property>
+            </configuration>
+            <exec>run-query.sh</exec>
+              <env-var>IMPALAD=${impalad}</env-var>
+              <env-var>QUERY=${query}</env-var>
+              <env-var>PRINCIPAL=${principal}</env-var>
+              <env-var>PYTHON_EGG_CACHE=/home/${user}/.egg-cache</env-var>
+            <file>lib/run-query.sh#run-query.sh</file>
+        </shell>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
